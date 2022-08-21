@@ -224,6 +224,7 @@ var
 
   {$IFDEF I64}
 
+
 const
   WordSize: array [0 .. 2] of Byte = (2, 4, 8);
   rexfW = $8;
@@ -237,6 +238,7 @@ var
   CurREX: Byte;
   {$ELSE}
 
+
 const
   WordSize: array [0 .. 1] of Byte = (2, 4);
   {$ENDIF}
@@ -249,6 +251,7 @@ procedure ShowCommand;
 
 {$IFNDEF XMLx86}
 
+
 var
   {$IFDEF I64}
   RegTbl: array [boolean { with REX } ] of array [0 .. 3] of PBMTblProc;
@@ -257,6 +260,7 @@ var
   {$ENDIF}
   SegRegTbl: PBMTblProc;
 {$ELSE}
+
 
 const
   RegTbl: array [boolean { with REX } ] of array [0 .. 3] of TRegTblIndex = ((rtRB, rtRW, rtRD, rtRQ), (rtRB64, rtRW, rtRD, rtRQ));
@@ -408,6 +412,7 @@ function UnReadByte: boolean;
   end;
 
 {$IFNDEF XMLx86}
+
 
 procedure SetPrefix(V: integer);
   begin
@@ -779,6 +784,7 @@ function GetMode: integer;
 // 64-bit support
 {$IFDEF I64}
 
+
 procedure setREX(W, V: integer);
   begin
     CurREX := V and $7 + (W and $1) * rexfW + rexfPresent;
@@ -821,6 +827,7 @@ function ReadCommand: boolean;
   end;
 
 {$IFNDEF XMLx86}
+
 
 procedure WriteBMOpName(hN: THBMName);
   begin
@@ -1121,6 +1128,7 @@ procedure WriteArg(const A: TCmArg; IsDest: boolean);
   end;
 
 {$IFDEF XMLx86}
+
 
 procedure WriteMnem(Mnem: TOpcodeMnem);
   var

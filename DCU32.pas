@@ -95,18 +95,10 @@ type
     dcupliOSEmulator,
     dcuplLinux64);
 
-
-  // TDCUPlatform = (dcuplWin32, dcuplWin64, dcuplOsx32, dcuplIOSEmulator,
-  // dcuplIOSDevice, dcuplIOSDevice64, dcuplAndroid, dcuplLinux64, dcuplAndroid64, dcuplOsx64);
-
 const
   MobilePlatforms = [dcuplAndroid32, dcuplAndroid64, dcupliOSDevice32, dcupliOSDevice64, dcupliOSEmulator];
   LLVMPlatforms = [dcuplAndroid32, dcuplAndroid64, dcupliOSDevice32, dcupliOSDevice64, dcupliOSEmulator];
   Platforms64bit = [dcuplWin64, dcuplAndroid64, dcupliOSDevice64, dcuplOSX64, dcuplLinux64];
-
-  // MobilePlatforms = [dcuplIOSEmulator, dcuplIOSDevice, dcuplIOSDevice64, dcuplAndroid, dcuplAndroid64];
-  // LLVMPlatforms = [dcuplIOSDevice, dcuplIOSDevice64, dcuplAndroid, dcuplLinux64, dcuplAndroid64, dcuplOsx64];
-  // Platforms64bit = [dcuplWin64, dcuplIOSDevice64, dcuplLinux64, dcuplAndroid64, dcuplOsx64];
 
   { Internal unit types }
 const
@@ -692,8 +684,7 @@ function TUnit.GetVersionStr: String;
       'Error', 'Error 1', '2', '3', '4', '5', '6', '7', '8', '2005', '2006', '?2007', '2009',
       'Error 13', '2010', 'XE', 'XE2', 'XE3', 'XE4', 'XE5', 'XE6', 'XE7', 'XE8', '10 Seattle',
       '10.1 Berlin', '10.2 Tokyo', '10.3 Rio', '10.4 Sydney', '11 Alexandria');
-    // platfStr: array [TDCUPlatform] of String = ('Windows (32-bit)', 'Windows (64-bit)', 'OS X (32-bit)',
-    // 'iOS (emulator)', 'iOS (32-bit)', 'iOS (64-bit)', 'Android (32-bit)', 'Linux (64-bit)', 'Android (64-bit)', 'OS X (64-bit)');
+
     platfStr: array [TDCUPlatform] of string =
       (
       'Windows (32-bit)', 'Windows (64-bit)',
