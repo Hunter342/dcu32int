@@ -50,6 +50,12 @@ The unit versions supported are
    
 ------------------------------------------------------------------------------------------------------
 
+# Extract DCU from DCP
+
+You can now extract DCU files from DCU using the -X option. (**Example: dcu32int -X "mydcp.dcp"**)
+
+------------------------------------------------------------------------------------------------------
+
 # NOTE 1:
 
 I marked those platforms which I checked. The utility also supports other platforms, for example: OSX32, Linux64, iOS Simulator, iOS Device 32, iOS Device 64.
