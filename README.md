@@ -52,7 +52,7 @@ The unit versions supported are
 
 # Extract DCU from DCP
 
-You can now extract DCU files from DCU using the -X option. (**Example: dcu32int -X "mydcp.dcp"**)
+You can now extract DCU(_Delphi Compiled Unit_) files from DCP(_Delphi Compiled Package_) using the -X option. (**Example: dcu32int -X "mydcp.dcp"**)
 
 ------------------------------------------------------------------------------------------------------
 
