@@ -188,9 +188,9 @@ type
   TCmArg = record
     CmdKind: Byte;
     DSize: Byte;
-    {$IFDEF XMLx86}
+{$IFDEF XMLx86}
     nArg: Byte; // In the list of TOpcodeArg`s
-    {$ENDIF}
+{$ENDIF}
     Inf: integer { Byte };
     Fix: PFixupRec;
   end;
@@ -208,11 +208,11 @@ type
 var
   OpSeg: Byte;
   Cmd: TCmdInfo;
-  {$IFNDEF XMLx86}
+{$IFNDEF XMLx86}
   CmdPrefix, CmdSuffix: integer;
   PrefixCnt: integer;
   PrefixTbl: array [0 .. 10] of integer;
-  {$ENDIF}
+{$ENDIF}
 
 
 var
@@ -222,7 +222,7 @@ var
   ShowX86DasmExtraInfo: boolean = false;
   // {$ENDIF}
 
-  {$IFDEF I64}
+{$IFDEF I64}
 
 
 const
@@ -236,12 +236,12 @@ var
 
 var
   CurREX: Byte;
-  {$ELSE}
+{$ELSE}
 
 
 const
   WordSize: array [0 .. 1] of Byte = (2, 4);
-  {$ENDIF}
+{$ENDIF}
 
   // procedure ClearCommand;
 
@@ -253,37 +253,37 @@ procedure ShowCommand;
 
 
 var
-  {$IFDEF I64}
+{$IFDEF I64}
   RegTbl: array [boolean { with REX } ] of array [0 .. 3] of PBMTblProc;
-  {$ELSE}
+{$ELSE}
   RegTbl: array [0 .. 2] of PBMTblProc;
-  {$ENDIF}
+{$ENDIF}
   SegRegTbl: PBMTblProc;
 {$ELSE}
 
 
 const
   RegTbl: array [boolean { with REX } ] of array [0 .. 3] of TRegTblIndex = ((rtRB, rtRW, rtRD, rtRQ), (rtRB64, rtRW, rtRD, rtRQ));
-  {$ENDIF}
+{$ENDIF}
 
 function GetIntData(hDSize, Ofs: Byte; var I: LongInt): boolean;
 
 implementation
 
 uses
-  {$IFDEF UNICODE}AnsiStrings{$ELSE}SysUtils{$ENDIF},
-  {$IFNDEF XMLx86}op{$ELSE}x86Defs, x86Op, TypInfo{$ENDIF}, {DCU_In,} DCU_Out;
+{$IFDEF UNICODE}AnsiStrings{$ELSE}SysUtils{$ENDIF},
+{$IFNDEF XMLx86}op{$ELSE}x86Defs, x86Op, TypInfo{$ENDIF}, {DCU_In,} DCU_Out;
 
 var
   AdrIs32: boolean;
   OpIs32: boolean;
 
-  {$IFNDEF XMLx86}
+{$IFNDEF XMLx86}
   EAMod3TblProc: PBMTblProc;
   EAMod3TblProcCnt: integer;
-  {$ELSE}
+{$ELSE}
   EAMod3TblProc: TRegTblIndex;
-  {$ENDIF}
+{$ENDIF}
 
 
 var { For unread }
@@ -294,22 +294,22 @@ procedure ClearCommand;
     PrevCodePtr := CodePtr;
     fillChar(Cmd, SizeOf(Cmd), 0);
     OpSeg := hDefSeg;
-    {$IFNDEF XMLx86}
+{$IFNDEF XMLx86}
     CmdPrefix := 0;
     CmdSuffix := 0;
     PrefixCnt := 0;
-    {$ENDIF}
+{$ENDIF}
     AdrIs32 := AdrIs32Deft;
     OpIs32 := OpIs32Deft;
-    {$IFNDEF XMLx86}
+{$IFNDEF XMLx86}
     EAMod3TblProc := Nil;
     EAMod3TblProcCnt := 0;
-    {$ELSE}
+{$ELSE}
     EAMod3TblProc := rtNone;
-    {$ENDIF}
-    {$IFDEF I64}
+{$ENDIF}
+{$IFDEF I64}
     CurREX := 0;
-    {$ENDIF}
+{$ENDIF}
     SaveFixupState(fxState0);
   end;
 
@@ -461,16 +461,17 @@ procedure SetCmdArg(V: integer);
         DSize := 0;
         if V = hEA then
             CmdKind := caEffAdr
-        else if (V and {$IFNDEF XMLx86}nf{$ELSE}nbMask{$ENDIF}) <> 0 then begin
-            CmdKind := caReg;
-            Inf := V and nm;
-          end
-        else { if (V and $FFFFFF00)=0 then } begin
-            CmdKind := caVal;
-            Inf := V;
-          end
-          { else
-            Exit };
+        else
+          if (V and {$IFNDEF XMLx86}nf{$ELSE}nbMask{$ENDIF}) <> 0 then begin
+              CmdKind := caReg;
+              Inf := V and nm;
+            end
+          else { if (V and $FFFFFF00)=0 then } begin
+              CmdKind := caVal;
+              Inf := V;
+            end
+            { else
+              Exit };
       end;
   end;
 
@@ -574,20 +575,20 @@ function getEA(W: integer; var M, A: integer): boolean;
     CurB, Up2, Lo3, SIB: Byte;
     OpSize: Byte;
     imOfs: Byte;
-    {$IFNDEF XMLx86}
+{$IFNDEF XMLx86}
     TblProc: PBMTblProc;
-    {$ELSE}
+{$ELSE}
     RegCnt: integer;
     TblProc: TRegTblIndex;
-    {$ENDIF}
-    {$IFDEF I64}
+{$ENDIF}
+{$IFDEF I64}
   var
     SzF, OfsSzF: Byte;
-    {$ELSE}
+{$ELSE}
   const
     SzF = regcSzD;
     OfsSzF = dsDbl;
-    {$ENDIF}
+{$ENDIF}
   begin
     Result := false;
     { if W>dsMax then
@@ -603,11 +604,11 @@ function getEA(W: integer; var M, A: integer): boolean;
     Lo3 := CurB and $7;
     M := (CurB shr 3) and $7;
     if Up2 = 3 then begin
-        {$IFDEF I64}
+{$IFDEF I64}
         if CurREX > 0 then
             Lo3 := Lo3 or (CurREX and $1) shl 3;
-        {$ENDIF}
-        {$IFNDEF XMLx86}
+{$ENDIF}
+{$IFNDEF XMLx86}
         if EAMod3TblProc <> Nil then begin
             TblProc := EAMod3TblProc;
             if Lo3 >= EAMod3TblProcCnt then
@@ -616,7 +617,7 @@ function getEA(W: integer; var M, A: integer): boolean;
         else
             TblProc := RegTbl{$IFDEF I64}[CurREX > 0]{$ENDIF}[OpSize];
         A := TblProc^[Lo3]
-        {$ELSE}
+{$ELSE}
         if EAMod3TblProc <> rtNone then
             TblProc := EAMod3TblProc
         else
@@ -625,16 +626,16 @@ function getEA(W: integer; var M, A: integer): boolean;
         if Lo3 >= RegCnt then
             Lo3 := Lo3 mod RegCnt; // Just in case
         A := EncodeRegIndex(TblProc, Lo3);
-        {$ENDIF}
+{$ENDIF}
       end
     else begin
         A := hEA;
         if {$IFDEF I64}modeI64 or {$ENDIF} AdrIs32 then begin
-            {$IFDEF I64}
+{$IFDEF I64}
             SzF := regcSzD;
             if modeI64 and AdrIs32 { In fact means 64 bit } then
                 SzF := regcSzQ;
-            {$ENDIF}
+{$ENDIF}
             if Lo3 = hSP then begin { SIB }
                 if not ReadCodeByte(SIB) then
                     Exit;
@@ -652,14 +653,14 @@ function getEA(W: integer; var M, A: integer): boolean;
                     SIB := SIB + hPresent
                 else
                     SIB := 0;
-                {$IFDEF I64}
+{$IFDEF I64}
                 if CurREX > 0 then begin
                     if Lo3 and hPresent <> 0 then
                         Lo3 := Lo3 or hRegHasRex or (CurREX and $1) shl 3;
                     if SIB and hPresent <> 0 then
                         SIB := SIB or hRegHasRex or (CurREX and $2) shl 2;
                   end;
-                {$ENDIF}
+{$ENDIF}
                 { Cmd.EA.hBaseOnly := Lo3+SIB shl 4; }
                 Cmd.EA.hBaseOnly := Lo3 or SzF;
                 Cmd.EA.hIndex := SIB or SzF;
@@ -670,20 +671,20 @@ function getEA(W: integer; var M, A: integer): boolean;
                     Cmd.EA.hIndex := 0;
                     if not ReadImmedData(SizeOf(LongInt), imOfs, Cmd.EA.Fix) then
                         Exit;
-                    {$IFDEF I64}
+{$IFDEF I64}
                     if modeI64 then { RIP based }
                         OfsSzF := dsIPOfs + Ord(AdrIs32)
                     else
                         OfsSzF := dsDbl;
-                    {$ENDIF}
+{$ENDIF}
                     Cmd.EA.dOfs := OfsSzF shl dOfsSizeShift or imOfs;
                     Lo3 := 0; { For OpSeg }
                   end
                 else begin
-                    {$IFDEF I64}
+{$IFDEF I64}
                     if CurREX > 0 then
                         Lo3 := Lo3 or hRegHasRex or (CurREX and $1) shl 3;
-                    {$ENDIF}
+{$ENDIF}
                     Cmd.EA.hBaseOnly := Lo3 or hPresent or SzF;
                     Cmd.EA.hIndex := 0;
                   end;
@@ -1036,12 +1037,12 @@ procedure WriteEA;
       begin
         if hReg and hPresent = 0 then
             Exit;
-        {$IFNDEF XMLx86}
+{$IFNDEF XMLx86}
         iReg := RegTbl{$IFDEF I64}[hReg and hRegHasRex <> 0]{$ENDIF}
           [(hReg shr hRegSizeShift) and hRegSizeMask]^[hReg and $F];
-        {$ELSE}
+{$ELSE}
           iReg := EncodeRegIndex(RegTbl[hReg and hRegHasRex <> 0][(hReg shr hRegSizeShift) and hRegSizeMask], hReg and $F);
-        {$ENDIF}
+{$ENDIF}
         if SS = 0 then
             hLastReg := iReg;
         Plus;
@@ -1077,11 +1078,11 @@ procedure WriteEA;
         PutS(' ') };
     SegN := Cmd.EA.hSeg;
     if SegN < hDefSeg then begin
-        {$IFNDEF XMLx86}
+{$IFNDEF XMLx86}
         WriteRegName(SegRegTbl^[SegN]);
-        {$ELSE}
+{$ELSE}
         WriteRegName(nbSeg + SegN);
-        {$ENDIF}
+{$ENDIF}
         PutS(':');
       end;
     Cnt := 0;
@@ -1325,12 +1326,12 @@ procedure ShowCommand;
     I: integer;
     OpName: String[10];
     SeprChar: AnsiChar;
-    {$IFDEF XMLx86}
+{$IFDEF XMLx86}
     Entry: POpcodeEntry;
     Args: POpcodeArgs;
-    {$ENDIF}
+{$ENDIF}
   begin
-    {$IFNDEF XMLx86}
+{$IFNDEF XMLx86}
     // ReportCommandMem;
     for I := 0 to PrefixCnt - 1 do begin
         WriteBMOpName(PrefixTbl[I]);
@@ -1354,7 +1355,7 @@ procedure ShowCommand;
         WriteBMOpName(CmdSuffix);
         PutS(' ');
       end;
-    {$ELSE}
+{$ELSE}
     SeprChar := ',';
     if Cmd.PrefSize > 0 then
         ShowCmdPrefixes(PrevCodePtr, Cmd.hCmd.FPrefix);
@@ -1362,17 +1363,17 @@ procedure ShowCommand;
     if ShowX86DasmExtraInfo then
         ShowCmdExtraInfo(Entry);
     PutSpace;
-    {$ENDIF}
+{$ENDIF}
     for I := 1 to Cmd.Cnt do begin
         if I > 1 then begin
             PutS(SeprChar);
             SeprChar := ',';
           end;
         WriteArg(Cmd.Arg[I], {$IFNDEF XMLx86}I = 1{$ELSE}afDst in Args^[Cmd.Arg[I].nArg].Flags{$ENDIF}{ IsFirst } );
-        {$IFDEF XMLx86}
+{$IFDEF XMLx86}
         if ShowX86DasmExtraInfo then
             ShowArgExtraInfo(Args^[Cmd.Arg[I].nArg]);
-        {$ENDIF}
+{$ENDIF}
       end;
   end;
 

@@ -132,7 +132,7 @@ function GetVerTag(Ver: integer): String;
       '10_2Tokyo', // 10.2 Tokyo
       '10_3Rio', // 10.3 Rio
       '10_4Sydney', // 10.4 Sydney
-      '11_Alexandria' // 11 Alexandria
+      '11_Alexandria'// 11 Alexandria
       );
   begin
     if Ver < verK1 then
@@ -210,7 +210,7 @@ function GetCfgLibDir(VerRq: integer; MSILRq: Boolean; PlatformRq: TDCUPlatform)
 
 function GetDelphiLibDir(VerRq: integer; MSILRq: Boolean; PlatformRq: TDCUPlatform): String;
   { Delphi LIB directory autodetection }
-  {$IFDEF Win32}
+{$IFDEF Win32}
   const
     sRoot = 'RootDir';
     // sPlatformDir: array [TDCUPlatform] of String = ('win32', 'win64', 'osx32', 'iOSSimulator',
@@ -228,12 +228,12 @@ function GetDelphiLibDir(VerRq: integer; MSILRq: Boolean; PlatformRq: TDCUPlatfo
     Key: HKey;
     sPath, sRes, sLib: String;
     DataType, DataSize: integer;
-    {$ENDIF}
+{$ENDIF}
   begin
     Result := GetCfgLibDir(VerRq, MSILRq, PlatformRq);
     if Result <> '' then
         Exit;
-    {$IFDEF Win32}
+{$IFDEF Win32}
     sPath := '';
     sLib := 'Lib';
     case VerRq of
@@ -290,7 +290,7 @@ function GetDelphiLibDir(VerRq: integer; MSILRq: Boolean; PlatformRq: TDCUPlatfo
     else if PreferDebugLib and (VerRq > verD4) then
         sLib := sLib + DirSep + 'debug';
     Result := sRes + sLib + DirSep;
-    {$ENDIF}
+{$ENDIF}
   end;
 
 function IsDCPName(const S: String): Boolean;

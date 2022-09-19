@@ -34,8 +34,9 @@ interface
 {$DEFINE D3dn}
 {$ENDIF}
 
+
 uses
-  {$IFDEF UNICODE}AnsiStrings, {$ENDIF}SysUtils;
+{$IFDEF UNICODE}AnsiStrings, {$ENDIF}SysUtils;
 
 type
   TDCURecTag = Byte { Char };
@@ -78,9 +79,9 @@ type
   TInt64Rec = record
     case integer of
       0: (Lo: LongInt; Hi: LongInt);
-      {$IFNDEF VER100 - D30}
+{$IFNDEF VER100 - D30}
       1: (Val: Int64);
-    {$ENDIF}
+{$ENDIF}
   end;
 
   TByteSet = set of Byte;
@@ -126,11 +127,11 @@ type
 
   TDCUFileTime = integer;
 
-  {$IFDEF D3dn}
+{$IFDEF D3dn}
   TQWORD = Comp;
-  {$ELSE}
+{$ELSE}
   TQWORD = Int64;
-  {$ENDIF}
+{$ENDIF}
   PQWORD = ^TQWORD;
 
   TMemStrRef = object // Representation of string from DCU memory without copying chars
@@ -430,7 +431,7 @@ function StrLEnd(Str: PAnsiChar; L: Cardinal): PAnsiChar; assembler;
     REPNE   SCASB
     JCXZ    @1
     DEC     EDI
-@1:
+  @1:
     MOV     EAX,EDI
     MOV     EDI,EDX
 end;
@@ -629,12 +630,14 @@ function NDXToStr(NDXLo: LongInt): AnsiString;
   begin
     if NDXHi = 0 then
         Result := {$IFDEF UNICODE}AnsiStrings.{$ENDIF}Format('$%x', [NDXLo])
-    else if NDXHi = -1 then
-        Result := {$IFDEF UNICODE}AnsiStrings.{$ENDIF}Format('-$%x', [-NDXLo])
-    else if NDXHi < 0 then
-        Result := {$IFDEF UNICODE}AnsiStrings.{$ENDIF}Format('-$%x%8.8x', [-NDXHi - Ord(NDXLo <> 0), -NDXLo])
     else
-        Result := {$IFDEF UNICODE}AnsiStrings.{$ENDIF}Format('$%x%8.8x', [NDXHi, NDXLo])
+      if NDXHi = -1 then
+          Result := {$IFDEF UNICODE}AnsiStrings.{$ENDIF}Format('-$%x', [-NDXLo])
+      else
+        if NDXHi < 0 then
+            Result := {$IFDEF UNICODE}AnsiStrings.{$ENDIF}Format('-$%x%8.8x', [-NDXHi - Ord(NDXLo <> 0), -NDXLo])
+        else
+            Result := {$IFDEF UNICODE}AnsiStrings.{$ENDIF}Format('$%x%8.8x', [NDXHi, NDXLo])
   end;
 
 function MemToInt(DP: Pointer; Sz: Cardinal; var Res: integer): Boolean;
