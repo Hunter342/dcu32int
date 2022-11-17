@@ -3,7 +3,7 @@
         <ProjectGuid>{61D5030C-EA50-4F33-BC06-8BFEDB340603}</ProjectGuid>
         <MainSource>dcu32int.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Console</AppType>
         <FrameworkType>None</FrameworkType>
@@ -89,6 +89,7 @@
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
+        <DCC_WriteableConstants>true</DCC_WriteableConstants>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <VerInfo_Keys>package=com.embarcadero.$(MSBuildProjectName);label=$(MSBuildProjectName);versionCode=1;versionName=1.0.0;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
@@ -152,9 +153,9 @@
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <VerInfo_Keys>CompanyName=;FileVersion=1.21.0.14;InternalName=DCU32INT;LegalCopyright=Copyright ©2000-2022, Alexei E. Hmelnov;LegalTrademarks=;OriginalFilename=DCU32INT;ProductVersion=1.21.0;Comments=;ProgramID=;FileDescription=The utility DCU32INT parses *.dcu file and converts it into a close to Pascal form.;ProductName=DCU32INT</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileVersion=1.21.0.17;InternalName=DCU32INT;LegalCopyright=Copyright ©2000-2022, Alexei E. Hmelnov;LegalTrademarks=;OriginalFilename=DCU32INT;ProductVersion=1.21.0;Comments=;ProgramID=;FileDescription=The utility DCU32INT parses *.dcu file and converts it into a close to Pascal form.;ProductName=DCU32INT</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Build>14</VerInfo_Build>
+        <VerInfo_Build>17</VerInfo_Build>
         <Icon_MainIcon>dcu32int_Icon1.ico</Icon_MainIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
@@ -170,10 +171,11 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
-        <VerInfo_Keys>CompanyName=;FileDescription=The utility DCU32INT parses *.dcu file and converts it into a close to Pascal form.;FileVersion=1.21.0.52;InternalName=DCU32INT;LegalCopyright=Copyright ©2000-2022, Alexei E. Hmelnov;LegalTrademarks=;OriginalFilename=DCU32INT;ProductName=DCU32INT;ProductVersion=1.21.0;Comments=;ProgramID=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=The utility DCU32INT parses *.dcu file and converts it into a close to Pascal form.;FileVersion=1.21.0.98;InternalName=DCU32INT;LegalCopyright=Copyright ©2000-2022, Alexei E. Hmelnov;LegalTrademarks=;OriginalFilename=DCU32INT;ProductName=DCU32INT;ProductVersion=1.21.0;Comments=;ProgramID=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Build>52</VerInfo_Build>
+        <VerInfo_Build>98</VerInfo_Build>
         <Icon_MainIcon>dcu32int_Icon1.ico</Icon_MainIcon>
+        <Debugger_RunParams>-X &quot;cxLibraryRS28.dcp&quot;</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <VerInfo_IncludeVerInfo>false</VerInfo_IncludeVerInfo>

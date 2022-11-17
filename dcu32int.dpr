@@ -1,4 +1,6 @@
+{$IFDEF SOME}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+{$ENDIF}
 {$APPTYPE CONSOLE}
 {$IFDEF ConditionalExpressions}
 {$WARN UNSAFE_TYPE OFF}
@@ -120,6 +122,7 @@ var
   Queries: TQueryFlags = [];
   ExtractDCUFromDCP: Boolean = false;
   LoadedDCPFile: TMemoryStream = nil;
+  Num: Integer = 0;
 
 function ProcessParms: Boolean;
   var
@@ -492,6 +495,7 @@ procedure ProcessExc(E: Exception; OutRedir: Boolean);
   var
     ExcS: AnsiString;
   begin
+    if ExtractDCUFromDCP then Exit();
     ExcS := {$IFDEF UNICODE}AnsiStrings.{$ENDIF}Format('!!!%s: "%s"',
       [E.ClassName, E.Message]);
     if Writer <> Nil then
@@ -527,9 +531,10 @@ function ProcessUnit(FN: String; OutRedir: Boolean): integer;
           end
         else if (U <> Nil) and (ExtractDCUFromDCP) then
           begin
-            var dcuFileName: string := string(U.FUnitName) + '.dcu';
+            Num := Num + 1;
+            var dcuFileName: string := string(U.FUnitName).TrimStart(['@', '.']) + '.dcu';
 
-            Writeln('DCUfromDCP: Processing DCU... (fileName: ' + dcuFileName + ')');
+            Write('DCUfromDCP: [', Num, '] Processing DCU... (fileName: ' + dcuFileName + ')');
 
             if not TDirectory.Exists('extracted_dcu') then
                 TDirectory.CreateDirectory('extracted_dcu');
@@ -537,11 +542,25 @@ function ProcessUnit(FN: String; OutRedir: Boolean): integer;
             if TFile.Exists(TPath.Combine('extracted_dcu', dcuFileName)) then
                 TFile.Delete(TPath.Combine('extracted_dcu', dcuFileName));
 
-            var dcuFile: TFileStream := TFile.Create(TPath.Combine('extracted_dcu', dcuFileName));
-            dcuFile.Write(TArray<Byte>(U.FMemPtr), U.FMemSize);
+            var dcuFile: TFileStream := TFileStream.Create(TPath.Combine('extracted_dcu', dcuFileName), fmCreate);
+            var dcuMem: TArray<Byte> := [];
+            SetLength(dcuMem, U.FMemSize);
+            for var I: Integer := 0 to Length(dcuMem) - 1 do
+              dcuMem[i] := Byte(TArray<AnsiChar>(Pointer(U.FMemptr))[i]);
 
-            if TFile.Exists(U.FUnitName + '.int') then
-              TFile.Delete(U.FUnitName + '.int');
+            dcuFile.Write(dcuMem, Length(dcuMem));
+
+            if TFile.GetSize(TPath.Combine('extracted_dcu', dcuFileName)) = U.FMemSize then
+              begin
+                Write(' - OK (Mem: ', U.FMemSize, '; File: ', TFile.GetSize(TPath.Combine('extracted_dcu', dcuFileName)), ')', #10#13);
+              end
+            else
+              begin
+                MessageBox(0, PChar(dcuFileName + ' failed!'), PChar('DCUfromDCP Error!'), MB_ICONERROR or MB_OK);
+                Write(' - FAIL (Mem: ', U.FMemSize, '; File: ', TFile.GetSize(TPath.Combine('extracted_dcu', dcuFileName)), ')', #10#13);
+              end;
+
+            dcuFile.Free();
           end;
       end;
     except
@@ -649,6 +668,9 @@ begin
       // WriteUsage;
       Exit;
     end;
-  Halt(ProcessFile(DCUName));
+  var Code: Integer := ProcessFile(DCUName);
+  if ExtractDCUFromDCP then
+    if TFile.Exists(TPath.GetFileNameWithoutExtension(DCUName) + '.int') then
+      TFile.Delete(TPath.GetFileNameWithoutExtension(DCUName) + '.int');
 
 end.

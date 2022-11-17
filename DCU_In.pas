@@ -218,6 +218,9 @@ function ExtractFileNameAnySep(const FN: String): String;
 function AllocName(const S: AnsiString): PName;
 procedure FreeName(NP: PName);
 
+var
+  DCUFromDCP: Boolean;
+
 implementation
 
 uses
@@ -228,6 +231,8 @@ procedure DCUError(const Msg: String);
     US: String;
     TagC: AnsiChar;
   begin
+    if DCUfromDCP then Exit();
+
     US := '';
     if CurUnit <> MainUnit then begin
         US := CurUnit.UnitName;
@@ -255,6 +260,8 @@ procedure DCUWarning(const Msg: String);
   var
     US: String;
   begin
+    if DCUFromDCP then Exit();    
+
     US := '';
     if CurUnit <> MainUnit then begin
         US := CurUnit.UnitName;
