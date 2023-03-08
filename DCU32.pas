@@ -2747,6 +2747,12 @@ function TUnit.ReadConstAddInfo(LastProcDecl: TNameDecl): integer;
             hDef2 := ReadUIndex;
             V := ReadUIndex;
           end;
+        $08:
+          begin
+            Result := ReadUIndex;
+            V := ReadUIndex;
+            SkipBlock(V);
+          end;
         $09:
           begin
             Result := ReadUIndex;
@@ -2910,6 +2916,12 @@ function TUnit.ReadConstAddInfo(LastProcDecl: TNameDecl): integer;
             V := ReadUIndex;
             V1 := ReadUIndex;
             V2 := ReadUIndex;
+          end;
+        $16:
+          begin
+            Result := ReadUIndex;
+            V := ReadUIndex;
+            SkipBlock(V);
           end;
       else
         Break;
